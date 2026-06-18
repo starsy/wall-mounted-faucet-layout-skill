@@ -1,5 +1,7 @@
 # Wall-Mounted Faucet Geometry Skill
 
+Language: [English](README.md) | [中文](README.zh-CN.md)
+
 Calculate the straight-line geometric relationship among a wall-mounted faucet outlet, basin rim, drain target point, and water stream angle.
 
 ![Wall-mounted faucet and basin geometry](assets/wall_mounted_faucet_geometry_v2.svg)
