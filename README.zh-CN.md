@@ -66,8 +66,68 @@ calculator at `vendor/skills/wall-mounted-faucet-layout/scripts/faucet_geometry.
 在 agent 提示中使用:
 
 ```text
-Use $wall-mounted-faucet-layout to calculate the faucet layout with K=5 cm, W=40 cm, H2=14 cm, L=20.5 cm, and theta=10 degrees.
+Use $wall-mounted-faucet-layout to solve faucet reach L with K=5 cm, WS=20 cm, H1=15 cm, H2=14 cm, and theta=10 degrees.
 ```
+
+## 最常见工作流
+
+选择壁挂式龙头时，通常最需要计算的是 `L` 或 `H1`：
+
+- 计算 `L`：在台盆/排水几何和期望出水口高度已知时，用来选择龙头出水口伸出墙面的距离。
+- 计算 `H1`：在已经看中某个龙头、已知龙头伸出距离 `L` 时，用来检查出水口应高出盆沿多少。
+
+### 选择龙头伸出距离：计算 `L`
+
+当台盆/排水几何和期望出水口高度已知时使用:
+
+```bash
+python scripts/faucet_geometry.py \
+  --solve L \
+  --K 5 \
+  --WS 20 \
+  --H1 15 \
+  --H2 14 \
+  --theta 10 \
+  --unit cm
+```
+
+期望结果:
+
+```text
+L = 19.886518 cm
+horizontal_offset = 5.113482 cm
+vertical_drop = 29.000000 cm
+reverse_theta = 10.000000 degrees
+```
+
+解释：选择出水口从完成墙面伸出约 `19.9 cm` 的龙头。
+
+### 检查出水口高度：计算 `H1`
+
+当已经知道龙头伸出距离时使用:
+
+```bash
+python scripts/faucet_geometry.py \
+  --solve H1 \
+  --K 5 \
+  --W 40 \
+  --H2 14 \
+  --L 20.5 \
+  --theta 10 \
+  --unit cm
+```
+
+期望结果:
+
+```text
+H1 = 11.520768 cm
+horizontal_offset = 4.500000 cm
+vertical_drop = 25.520768 cm
+reverse_theta = 10.000000 degrees
+drain_center_offset = 0.000000 cm
+```
+
+解释：如果出水口能高出盆沿约 `11.5 cm`，这个龙头伸出距离在几何上可行。
 
 文件:
 
@@ -87,7 +147,7 @@ tan(theta) = (K + WS - L) / (H1 + H2)
 
 渲染文档时建议优先使用 SVG，因为缩放后标签仍然清晰；PNG 仅作为不支持 SVG 的环境中的备用图。
 
-示例:
+次要示例：计算排水位置 `WS`
 
 ```bash
 python scripts/faucet_geometry.py \

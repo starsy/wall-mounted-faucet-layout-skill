@@ -66,8 +66,68 @@ calculator at `vendor/skills/wall-mounted-faucet-layout/scripts/faucet_geometry.
 Use it from an agent prompt:
 
 ```text
-Use $wall-mounted-faucet-layout to calculate the faucet layout with K=5 cm, W=40 cm, H2=14 cm, L=20.5 cm, and theta=10 degrees.
+Use $wall-mounted-faucet-layout to solve faucet reach L with K=5 cm, WS=20 cm, H1=15 cm, H2=14 cm, and theta=10 degrees.
 ```
+
+## Most Common Workflows
+
+Most faucet-selection questions come down to `L` or `H1`:
+
+- Solve `L` to find the faucet reach/spec-sheet projection needed for a planned outlet height.
+- Solve `H1` to check the required outlet height when you already have a candidate faucet reach.
+
+### Choose faucet reach: solve `L`
+
+Use this when the basin/drain geometry and desired outlet height are known:
+
+```bash
+python scripts/faucet_geometry.py \
+  --solve L \
+  --K 5 \
+  --WS 20 \
+  --H1 15 \
+  --H2 14 \
+  --theta 10 \
+  --unit cm
+```
+
+Expected result:
+
+```text
+L = 19.886518 cm
+horizontal_offset = 5.113482 cm
+vertical_drop = 29.000000 cm
+reverse_theta = 10.000000 degrees
+```
+
+Interpretation: choose a faucet whose outlet projects about `19.9 cm` from the finished wall.
+
+### Check outlet height: solve `H1`
+
+Use this when you already know the faucet reach:
+
+```bash
+python scripts/faucet_geometry.py \
+  --solve H1 \
+  --K 5 \
+  --W 40 \
+  --H2 14 \
+  --L 20.5 \
+  --theta 10 \
+  --unit cm
+```
+
+Expected result:
+
+```text
+H1 = 11.520768 cm
+horizontal_offset = 4.500000 cm
+vertical_drop = 25.520768 cm
+reverse_theta = 10.000000 degrees
+drain_center_offset = 0.000000 cm
+```
+
+Interpretation: this reach works geometrically if the outlet can sit about `11.5 cm` above the basin rim.
 
 Files:
 
@@ -85,7 +145,7 @@ tan(theta) = (K + WS - L) / (H1 + H2)
 
 Use the SVG in rendered documentation because it stays crisp when zoomed and keeps the parameter labels readable.
 
-Example:
+Secondary example: solve drain position `WS`
 
 ```bash
 python scripts/faucet_geometry.py \

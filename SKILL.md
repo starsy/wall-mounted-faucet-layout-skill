@@ -1,6 +1,6 @@
 ---
 name: wall-mounted-faucet-layout
-description: Calculate and validate wall-mounted faucet installation geometry. Use when an agent needs to solve or check faucet reach, outlet height, basin depth, stream angle, wall setback, or drain position from K, W/WS, L, H1, H2, and theta.
+description: Calculate and validate wall-mounted faucet installation geometry, especially faucet reach L and outlet height H1 for product selection. Use when an agent needs to solve or check faucet reach, outlet height, basin depth, stream angle, wall setback, or drain position from K, W/WS, L, H1, H2, and theta.
 ---
 
 # Wall-Mounted Faucet Layout
@@ -15,6 +15,11 @@ Diagram reference:
 ## Purpose
 
 Use this skill to calculate or validate the installation geometry of a wall-mounted faucet and basin.
+
+Most faucet-selection questions should focus on:
+
+- `L`: required faucet reach, when the basin/drain geometry and desired outlet height are known
+- `H1`: required outlet height above the basin rim, when a candidate faucet reach is known
 
 It can solve for:
 
@@ -51,6 +56,16 @@ If the drain is centered:
 \[
 WS = \frac{W}{2}
 \]
+
+## Primary faucet-selection workflow
+
+Prefer solving for `L` or `H1` when the user is choosing a faucet:
+
+- Solve for `L` when the user knows the desired outlet height or wall rough-in height. Use the result to compare against faucet reach/spec-sheet projection from the finished wall to the outlet.
+- Solve for `H1` when the user has a candidate faucet reach `L`. Use the result to decide whether the outlet height above the basin rim is practical.
+- Do not treat `H1 + H2` as a fixed recommended value. It is the vertical drop required by the selected horizontal geometry and stream angle.
+- If the user asks generally for the "right faucet" and provides both a desired outlet height and basin/drain geometry, solve `L` first.
+- If the user provides a faucet model or faucet reach, solve `H1` first.
 
 ## Core geometry
 
@@ -116,7 +131,7 @@ H2=\frac{K+WS-L}{\tan(\theta)}-H1
 
 ## Required calculation procedure
 
-1. Identify the target variable.
+1. Identify the target variable. For faucet selection, prefer `L` or `H1` unless the user explicitly asks for another variable.
 2. Normalize all lengths to one unit.
 3. Confirm that `theta` is measured from the vertical.
 4. Resolve the drain location:
@@ -190,6 +205,10 @@ Substitution:
 Result:
 [target] = ... [unit]
 
+Selection guidance:
+- If solving L: compare this against faucet reach/spec-sheet projection from finished wall to outlet.
+- If solving H1: compare this against the desired outlet height above the basin rim and available wall rough-in.
+
 Validation:
 - Horizontal offset Δx = ...
 - Vertical drop Δy = ...
@@ -202,7 +221,17 @@ This is a straight-line geometric estimate. Confirm with a full-scale mock-up or
 
 ## Worked examples
 
-### Example 1: centered drain, solve for `H1`
+### Example 1: choose faucet reach, solve for `L`
+
+Given `K=5 cm`, `WS=20 cm`, `H1=15 cm`, `H2=14 cm`, `theta=10°`:
+
+\[
+L=5+20-(15+14)\tan(10^\circ)\approx19.89\text{ cm}
+\]
+
+Interpretation: choose a faucet whose outlet projects about `19.9 cm` from the finished wall, then verify with real water flow.
+
+### Example 2: check mounting height, solve for `H1`
 
 Given `K=5 cm`, `W=40 cm`, `H2=14 cm`, `L=20.5 cm`, `theta=10°`:
 
@@ -214,7 +243,9 @@ WS=20
 H1=\frac{5+20-20.5}{\tan(10^\circ)}-14\approx11.52\text{ cm}
 \]
 
-### Example 2: short reach, solve for `H1`
+Interpretation: this faucet reach works geometrically if the outlet can sit about `11.5 cm` above the basin rim.
+
+### Example 3: short reach, solve for `H1`
 
 Given `K=5 cm`, `WS=20 cm`, `H2=14 cm`, `L=16 cm`, `theta=10°`:
 
@@ -224,7 +255,7 @@ H1=\frac{5+20-16}{\tan(10^\circ)}-14\approx37.04\text{ cm}
 
 The large result is expected because a 10-degree stream is close to vertical.
 
-### Example 3: solve for `WS`
+### Example 4: secondary check, solve for `WS`
 
 Given `K=5 cm`, `H1=15 cm`, `H2=14 cm`, `L=20.5 cm`, `theta=10°`:
 
@@ -242,4 +273,11 @@ Reference calculator:
 
 ```text
 scripts/faucet_geometry.py
+```
+
+Primary calculator commands:
+
+```bash
+python scripts/faucet_geometry.py --solve L --K 5 --WS 20 --H1 15 --H2 14 --theta 10 --unit cm
+python scripts/faucet_geometry.py --solve H1 --K 5 --W 40 --H2 14 --L 20.5 --theta 10 --unit cm
 ```
