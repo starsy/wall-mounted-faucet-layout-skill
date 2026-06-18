@@ -6,9 +6,23 @@ Calculate the straight-line geometric relationship among a wall-mounted faucet o
 
 ![Wall-mounted faucet and basin geometry](assets/wall_mounted_faucet_geometry_v2.svg)
 
+Install for Codex agents:
+
+```bash
+mkdir -p ~/.codex/skills
+git clone https://github.com/<owner>/wall-mounted-faucet-layout-skill.git ~/.codex/skills/wall-mounted-faucet-layout
+```
+
+Use it from an agent prompt:
+
+```text
+Use $wall-mounted-faucet-layout to calculate the faucet layout with K=5 cm, W=40 cm, H2=14 cm, L=20.5 cm, and theta=10 degrees.
+```
+
 Files:
 
 - `SKILL.md` — formulas, workflow, validation, and examples
+- `agents/openai.yaml` — optional UI metadata for agents that support it
 - `scripts/faucet_geometry.py` — deterministic calculator
 - `assets/wall_mounted_faucet_geometry_v2.svg` — scalable diagram for GitHub
 - `assets/wall_mounted_faucet_geometry_v2.png` — raster fallback of the same diagram

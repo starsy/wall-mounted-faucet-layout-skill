@@ -1,6 +1,6 @@
 ---
 name: wall-mounted-faucet-layout
-description: Calculate the geometric relationship among wall-mounted faucet reach, outlet height, basin depth, outlet angle, and drain position.
+description: Calculate and validate wall-mounted faucet installation geometry. Use when an agent needs to solve or check faucet reach, outlet height, basin depth, stream angle, wall setback, or drain position from K, W/WS, L, H1, H2, and theta.
 ---
 
 # Wall-Mounted Faucet Layout

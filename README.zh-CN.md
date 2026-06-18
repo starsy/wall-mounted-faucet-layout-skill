@@ -6,9 +6,23 @@
 
 ![壁挂式龙头与台盆几何关系](assets/wall_mounted_faucet_geometry_v2.svg)
 
+安装到 Codex agents:
+
+```bash
+mkdir -p ~/.codex/skills
+git clone https://github.com/<owner>/wall-mounted-faucet-layout-skill.git ~/.codex/skills/wall-mounted-faucet-layout
+```
+
+在 agent 提示中使用:
+
+```text
+Use $wall-mounted-faucet-layout to calculate the faucet layout with K=5 cm, W=40 cm, H2=14 cm, L=20.5 cm, and theta=10 degrees.
+```
+
 文件:
 
 - `SKILL.md` - 公式、工作流程、校验规则和示例
+- `agents/openai.yaml` - 供支持该元数据的 agent 使用的可选 UI 信息
 - `scripts/faucet_geometry.py` - 确定性的计算脚本
 - `assets/wall_mounted_faucet_geometry_v2.svg` - 适合 GitHub 渲染的可缩放示意图
 - `assets/wall_mounted_faucet_geometry_v2.png` - 同一示意图的栅格备用版本

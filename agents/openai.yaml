@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wall-Mounted Faucet Layout"
+  short_description: "Calculate wall faucet geometry"
+  default_prompt: "Use $wall-mounted-faucet-layout to calculate a wall-mounted faucet installation from K, W or WS, H1, H2, L, and theta."
