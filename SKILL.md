@@ -5,6 +5,13 @@ description: Calculate and validate wall-mounted faucet installation geometry. U
 
 # Wall-Mounted Faucet Layout
 
+Source: https://github.com/starsy/wall-mounted-faucet-layout-skill
+
+Diagram reference:
+
+- English: `assets/wall_mounted_faucet_geometry_v2.svg`
+- Chinese: `assets/wall_mounted_faucet_geometry_v2_zh.svg`
+
 ## Purpose
 
 Use this skill to calculate or validate the installation geometry of a wall-mounted faucet and basin.
