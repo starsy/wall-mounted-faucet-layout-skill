@@ -1,6 +1,6 @@
 ---
 name: wall-mounted-faucet-layout
-description: Calculate and validate wall-mounted faucet installation geometry, especially faucet reach L and outlet height H1 for product selection. Use when an agent needs to solve or check faucet reach, outlet height, basin depth, stream angle, wall setback, or drain position from K, W/WS, L, H1, H2, and theta.
+description: Calculate, validate, and visualize wall-mounted faucet installation geometry, especially faucet reach L and outlet height H1 for product selection. Use when an agent needs to solve or check faucet reach, outlet height, basin depth, stream angle, wall setback, or drain position from K, W/WS, L, H1, H2, and theta, or generate an annotated SVG diagram for the result.
 ---
 
 # Wall-Mounted Faucet Layout
@@ -143,6 +143,7 @@ H2=\frac{K+WS-L}{\tan(\theta)}-H1
 8. Report the formula, substitution, exact result, and practical rounded result.
 9. Run the validation checks.
 10. Recommend an on-site water test before concealed installation.
+11. When the user would benefit from a visual explanation or installation handoff, generate an annotated SVG with `scripts/render_geometry_svg.py`.
 
 ## Validation checks
 
@@ -219,6 +220,16 @@ Practical note:
 This is a straight-line geometric estimate. Confirm with a full-scale mock-up or water-flow test.
 ```
 
+## Visual SVG output
+
+When the user asks for a visual, diagram, annotated layout, client handoff, or installer handoff, render a custom SVG with the included script. Use the same inputs and target variable that you used for the numeric calculation.
+
+```bash
+python scripts/render_geometry_svg.py --solve L --K 5 --WS 20 --H1 15 --H2 14 --theta 10 --unit cm --output faucet-layout.svg
+```
+
+The generated SVG marks the supplied dimensions, solved value, horizontal offset, vertical drop, reverse-check angle, and practical warning note directly in the diagram. Prefer writing the output to a user-visible path named for the project or scenario.
+
 ## Worked examples
 
 ### Example 1: choose faucet reach, solve for `L`
@@ -282,6 +293,12 @@ Reference calculator:
 
 ```text
 scripts/faucet_geometry.py
+```
+
+Reference visual renderer:
+
+```text
+scripts/render_geometry_svg.py
 ```
 
 Primary calculator commands:

@@ -134,6 +134,7 @@ drain_center_offset = 0.0 cm
 - `SKILL.md` - 公式、工作流程、校验规则和示例
 - `agents/openai.yaml` - 供支持该元数据的 agent 使用的可选 UI 信息
 - `scripts/faucet_geometry.py` - 确定性的计算脚本
+- `scripts/render_geometry_svg.py` - 根据具体输入和结果生成带标注的 SVG 示意图
 - `assets/wall_mounted_faucet_geometry_v2_zh.svg` - 中文 README 使用的可缩放示意图
 - `assets/wall_mounted_faucet_geometry_v2_zh.png` - 中文示意图的栅格备用版本
 - `assets/wall_mounted_faucet_geometry_v2.svg` - 英文版可缩放示意图
@@ -148,6 +149,24 @@ tan(theta) = (K + WS - L) / (H1 + H2)
 渲染文档时建议优先使用 SVG，因为缩放后标签仍然清晰；PNG 仅作为不支持 SVG 的环境中的备用图。
 
 脚本默认输出适合现场安装的工程精度：`--unit mm` 时输出到整毫米，`--unit cm` 时输出到 `0.1 cm`，角度输出到 `0.1°`。如需调整显示精度，可使用 `--precision` 或 `--angle-precision`。
+
+## 生成带标注的 SVG
+
+当需要把具体安装方案可视化交给安装人员或客户确认时，可以使用渲染脚本。它会使用和计算器相同的几何关系，并在 SVG 图中直接标出 `K`、`WS`、`L`、`H1`、`H2`、`theta`、水平偏移量和计算结果。
+
+```bash
+python scripts/render_geometry_svg.py \
+  --solve L \
+  --K 5 \
+  --WS 20 \
+  --H1 15 \
+  --H2 14 \
+  --theta 10 \
+  --unit cm \
+  --output faucet-layout.svg
+```
+
+生成的 SVG 适合在最终现场放水测试前用于沟通和确认。
 
 次要示例：计算排水位置 `WS`
 

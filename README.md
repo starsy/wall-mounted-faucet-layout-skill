@@ -134,6 +134,7 @@ Files:
 - `SKILL.md` — formulas, workflow, validation, and examples
 - `agents/openai.yaml` — optional UI metadata for agents that support it
 - `scripts/faucet_geometry.py` — deterministic calculator
+- `scripts/render_geometry_svg.py` — custom annotated SVG renderer for a specific input/result
 - `assets/wall_mounted_faucet_geometry_v2.svg` — scalable diagram for GitHub
 - `assets/wall_mounted_faucet_geometry_v2.png` — raster fallback of the same diagram
 
@@ -146,6 +147,24 @@ tan(theta) = (K + WS - L) / (H1 + H2)
 Use the SVG in rendered documentation because it stays crisp when zoomed and keeps the parameter labels readable.
 
 The script prints practical metric precision by default: whole millimeters for `--unit mm`, `0.1 cm` for `--unit cm`, and `0.1°` for angles. Use `--precision` or `--angle-precision` to override display precision.
+
+## Generate an Annotated SVG
+
+Use the renderer when you want a visual handoff for a specific faucet setup. It solves the same geometry as the calculator, then writes an SVG with `K`, `WS`, `L`, `H1`, `H2`, `theta`, horizontal offset, and the solved result marked directly on the diagram.
+
+```bash
+python scripts/render_geometry_svg.py \
+  --solve L \
+  --K 5 \
+  --WS 20 \
+  --H1 15 \
+  --H2 14 \
+  --theta 10 \
+  --unit cm \
+  --output faucet-layout.svg
+```
+
+The generated SVG is intended for sharing with installers or clients before doing the final on-site water-flow test.
 
 Secondary example: solve drain position `WS`
 
