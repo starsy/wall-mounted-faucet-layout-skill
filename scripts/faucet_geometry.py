@@ -14,9 +14,28 @@ REQUIRED_INPUTS = {
 def td(x):
     return math.tan(math.radians(x))
 
+def default_length_precision(unit):
+    normalized = unit.strip().lower()
+    if normalized in ("mm", "millimeter", "millimeters"):
+        return 0
+    if normalized in ("cm", "centimeter", "centimeters"):
+        return 1
+    if normalized in ("m", "meter", "meters"):
+        return 3
+    return 2
+
+def fmt(value, precision):
+    return f"{value:.{precision}f}"
+
 def validate_inputs(parser, a):
     if a.W is not None and a.W <= 0:
         parser.error("--W must be greater than 0")
+
+    if a.precision is not None and a.precision < 0:
+        parser.error("--precision must be 0 or greater")
+
+    if a.angle_precision < 0:
+        parser.error("--angle-precision must be 0 or greater")
 
     if a.WS is None and a.W is not None and a.solve != "WS":
         a.WS = a.W / 2
@@ -42,9 +61,12 @@ def main():
     for name in ["K","W","WS","H1","H2","L","theta"]:
         p.add_argument(f"--{name}", type=float)
     p.add_argument("--unit", default="cm")
+    p.add_argument("--precision", type=int, help="Decimal places for length outputs. Defaults to metric-friendly precision based on --unit.")
+    p.add_argument("--angle-precision", type=int, default=1, help="Decimal places for angle outputs. Default: 1.")
     a = p.parse_args()
 
     validate_inputs(p, a)
+    length_precision = a.precision if a.precision is not None else default_length_precision(a.unit)
 
     target = a.solve
     if target == "H1":
@@ -62,21 +84,22 @@ def main():
 
     setattr(a, target, result)
     suffix = "degrees" if target == "theta" else a.unit
-    print(f"{target} = {result:.6f} {suffix}")
+    result_precision = a.angle_precision if target == "theta" else length_precision
+    print(f"{target} = {fmt(result, result_precision)} {suffix}")
 
     horizontal_offset = None
     vertical_drop = None
     if a.K is not None and a.WS is not None and a.L is not None:
         horizontal_offset = a.K + a.WS - a.L
-        print(f"horizontal_offset = {horizontal_offset:.6f} {a.unit}")
+        print(f"horizontal_offset = {fmt(horizontal_offset, length_precision)} {a.unit}")
     if a.H1 is not None and a.H2 is not None:
         vertical_drop = a.H1 + a.H2
-        print(f"vertical_drop = {vertical_drop:.6f} {a.unit}")
+        print(f"vertical_drop = {fmt(vertical_drop, length_precision)} {a.unit}")
     if horizontal_offset is not None and vertical_drop is not None and vertical_drop != 0:
         reverse_theta = math.degrees(math.atan2(horizontal_offset, vertical_drop))
-        print(f"reverse_theta = {reverse_theta:.6f} degrees")
+        print(f"reverse_theta = {fmt(reverse_theta, a.angle_precision)} degrees")
     if a.W is not None and a.WS is not None:
-        print(f"drain_center_offset = {a.WS - a.W/2:.6f} {a.unit}")
+        print(f"drain_center_offset = {fmt(a.WS - a.W/2, length_precision)} {a.unit}")
 
     warnings = []
     if a.H1 is not None and a.H1 < 0:

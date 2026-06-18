@@ -269,6 +269,15 @@ For `W=40 cm`, the drain is approximately `0.61 cm` forward of center.
 
 Prefer deterministic calculation with the included script. Do not estimate trigonometric values mentally when exact dimensions matter.
 
+The script calculates with full floating-point precision internally, then prints practical engineering precision by default:
+
+- `--unit mm`: whole millimeters
+- `--unit cm`: `0.1 cm`
+- `--unit m`: `0.001 m`
+- Angles: `0.1°`
+
+Use `--precision` or `--angle-precision` only when the user explicitly needs a different display precision.
+
 Reference calculator:
 
 ```text

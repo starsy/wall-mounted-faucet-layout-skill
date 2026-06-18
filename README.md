@@ -94,10 +94,10 @@ python scripts/faucet_geometry.py \
 Expected result:
 
 ```text
-L = 19.886518 cm
-horizontal_offset = 5.113482 cm
-vertical_drop = 29.000000 cm
-reverse_theta = 10.000000 degrees
+L = 19.9 cm
+horizontal_offset = 5.1 cm
+vertical_drop = 29.0 cm
+reverse_theta = 10.0 degrees
 ```
 
 Interpretation: choose a faucet whose outlet projects about `19.9 cm` from the finished wall.
@@ -120,11 +120,11 @@ python scripts/faucet_geometry.py \
 Expected result:
 
 ```text
-H1 = 11.520768 cm
-horizontal_offset = 4.500000 cm
-vertical_drop = 25.520768 cm
-reverse_theta = 10.000000 degrees
-drain_center_offset = 0.000000 cm
+H1 = 11.5 cm
+horizontal_offset = 4.5 cm
+vertical_drop = 25.5 cm
+reverse_theta = 10.0 degrees
+drain_center_offset = 0.0 cm
 ```
 
 Interpretation: this reach works geometrically if the outlet can sit about `11.5 cm` above the basin rim.
@@ -145,6 +145,8 @@ tan(theta) = (K + WS - L) / (H1 + H2)
 
 Use the SVG in rendered documentation because it stays crisp when zoomed and keeps the parameter labels readable.
 
+The script prints practical metric precision by default: whole millimeters for `--unit mm`, `0.1 cm` for `--unit cm`, and `0.1°` for angles. Use `--precision` or `--angle-precision` to override display precision.
+
 Secondary example: solve drain position `WS`
 
 ```bash
@@ -162,11 +164,11 @@ python scripts/faucet_geometry.py \
 Expected result:
 
 ```text
-WS = 20.613482 cm
-horizontal_offset = 5.113482 cm
-vertical_drop = 29.000000 cm
-reverse_theta = 10.000000 degrees
-drain_center_offset = 0.613482 cm
+WS = 20.6 cm
+horizontal_offset = 5.1 cm
+vertical_drop = 29.0 cm
+reverse_theta = 10.0 degrees
+drain_center_offset = 0.6 cm
 ```
 
 This calculator is a geometric estimate. Confirm the final installation with an on-site mock-up or water-flow test before closing the wall.

@@ -94,10 +94,10 @@ python scripts/faucet_geometry.py \
 期望结果:
 
 ```text
-L = 19.886518 cm
-horizontal_offset = 5.113482 cm
-vertical_drop = 29.000000 cm
-reverse_theta = 10.000000 degrees
+L = 19.9 cm
+horizontal_offset = 5.1 cm
+vertical_drop = 29.0 cm
+reverse_theta = 10.0 degrees
 ```
 
 解释：选择出水口从完成墙面伸出约 `19.9 cm` 的龙头。
@@ -120,11 +120,11 @@ python scripts/faucet_geometry.py \
 期望结果:
 
 ```text
-H1 = 11.520768 cm
-horizontal_offset = 4.500000 cm
-vertical_drop = 25.520768 cm
-reverse_theta = 10.000000 degrees
-drain_center_offset = 0.000000 cm
+H1 = 11.5 cm
+horizontal_offset = 4.5 cm
+vertical_drop = 25.5 cm
+reverse_theta = 10.0 degrees
+drain_center_offset = 0.0 cm
 ```
 
 解释：如果出水口能高出盆沿约 `11.5 cm`，这个龙头伸出距离在几何上可行。
@@ -147,6 +147,8 @@ tan(theta) = (K + WS - L) / (H1 + H2)
 
 渲染文档时建议优先使用 SVG，因为缩放后标签仍然清晰；PNG 仅作为不支持 SVG 的环境中的备用图。
 
+脚本默认输出适合现场安装的工程精度：`--unit mm` 时输出到整毫米，`--unit cm` 时输出到 `0.1 cm`，角度输出到 `0.1°`。如需调整显示精度，可使用 `--precision` 或 `--angle-precision`。
+
 次要示例：计算排水位置 `WS`
 
 ```bash
@@ -164,11 +166,11 @@ python scripts/faucet_geometry.py \
 期望结果:
 
 ```text
-WS = 20.613482 cm
-horizontal_offset = 5.113482 cm
-vertical_drop = 29.000000 cm
-reverse_theta = 10.000000 degrees
-drain_center_offset = 0.613482 cm
+WS = 20.6 cm
+horizontal_offset = 5.1 cm
+vertical_drop = 29.0 cm
+reverse_theta = 10.0 degrees
+drain_center_offset = 0.6 cm
 ```
 
 该计算器提供的是几何估算。封墙前请使用现场样板或实际放水测试确认最终安装位置。
