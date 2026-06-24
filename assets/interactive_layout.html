@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wall-Mounted Faucet Layout</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --ink: #151922;
+      --muted: #5d6673;
+      --line: #d9dfe8;
+      --blue: #1f5fae;
+      --green: #17863b;
+      --red: #c62828;
+      --purple: #6a3dbb;
+      --orange: #d97706;
+      --amber: #9a5a00;
+      --water: #2d86e8;
+      --warning-bg: #fff4d6;
+      --warning-line: #e4b54a;
+      --bad-bg: #fff0f0;
+      --bad-line: #e1a2a2;
+      --shadow: 0 16px 40px rgba(30, 43, 64, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.4;
+      overflow-x: hidden;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      font-weight: 720;
+      letter-spacing: 0;
+    }
+
+    .topbar-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 430px);
+      gap: 16px;
+      padding: 16px;
+      align-items: stretch;
+    }
+
+    .visual-panel,
+    .controls-panel {
+      min-width: 0;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .visual-panel {
+      display: grid;
+      grid-template-rows: minmax(360px, 1fr) auto;
+      overflow: hidden;
+    }
+
+    .diagram-shell {
+      min-height: 420px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #diagram {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      max-height: calc(100vh - 170px);
+      display: block;
+      flex: 0 0 100%;
+      min-width: 0;
+    }
+
+    .result-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      background: #fbfcfe;
+    }
+
+    .metric {
+      padding: 12px 14px;
+      border-right: 1px solid var(--line);
+      min-width: 0;
+    }
+
+    .metric:last-child {
+      border-right: 0;
+    }
+
+    .metric-label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      display: block;
+      margin-top: 5px;
+      font-size: 18px;
+      font-weight: 760;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .controls-panel {
+      padding: 16px;
+      overflow: hidden auto;
+      max-height: calc(100vh - 80px);
+    }
+
+    .control-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .control-head {
+      display: grid;
+      grid-template-columns: 1fr 112px;
+      gap: 10px;
+    }
+
+    .field,
+    .field-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    label,
+    legend {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 740;
+      text-transform: uppercase;
+    }
+
+    select,
+    input[type="number"],
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--ink);
+      min-height: 38px;
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus,
+    button:focus-visible {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(31, 95, 174, 0.18);
+    }
+
+    .rows {
+      display: grid;
+      gap: 10px;
+    }
+
+    .field-row {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .field-row.is-solved {
+      border-color: rgba(198, 40, 40, 0.45);
+      background: #fff8f8;
+    }
+
+    .field-row.is-derived {
+      border-color: rgba(23, 134, 59, 0.38);
+      background: #f5fff8;
+    }
+
+    .row-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .symbol {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 780;
+      text-transform: none;
+    }
+
+    .meaning {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .input-pair {
+      display: grid;
+      grid-template-columns: 1fr 96px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    input[readonly] {
+      background: #f6f8fb;
+      color: #303844;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0 0;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--green);
+    }
+
+    .status {
+      display: grid;
+      gap: 8px;
+      min-height: 42px;
+    }
+
+    .message {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      font-size: 14px;
+      background: #f8fafc;
+      color: var(--muted);
+    }
+
+    .message.warning {
+      background: var(--warning-bg);
+      border-color: var(--warning-line);
+      color: #7b5310;
+    }
+
+    .message.error {
+      background: var(--bad-bg);
+      border-color: var(--bad-line);
+      color: #9d1c1c;
+    }
+
+    .command {
+      display: grid;
+      gap: 8px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      color: #253040;
+      font-size: 12px;
+      line-height: 1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #ffffff;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 720;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .svg-text {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      fill: #1b1f28;
+    }
+
+    @media (max-width: 980px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .controls-panel {
+        max-height: none;
+      }
+
+      #diagram {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .topbar {
+        display: grid;
+        gap: 6px;
+      }
+
+      .topbar-note {
+        text-align: left;
+      }
+
+      main {
+        padding: 10px;
+        max-width: 100vw;
+        overflow: hidden;
+      }
+
+      .visual-panel,
+      .controls-panel {
+        width: calc(100vw - 20px);
+        max-width: calc(100vw - 20px);
+      }
+
+      .diagram-shell {
+        min-height: 0;
+        padding: 8px;
+      }
+
+      #diagram {
+        width: calc(100vw - 36px);
+        max-width: calc(100vw - 36px);
+        flex-basis: calc(100vw - 36px);
+      }
+
+      .result-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .control-head {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .metric {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .input-pair {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1>Wall-Mounted Faucet Layout</h1>
+      <p class="topbar-note">Verify final placement with an on-site water-flow test.</p>
+    </header>
+
+    <main>
+      <section class="visual-panel" aria-label="Live faucet geometry diagram">
+        <div class="diagram-shell">
+          <svg id="diagram" viewBox="0 0 1120 680" role="img" aria-label="Side view diagram of faucet, basin, and water path"></svg>
+        </div>
+        <div class="result-strip" aria-live="polite">
+          <div class="metric">
+            <span class="metric-label">Solved</span>
+            <span class="metric-value" id="metricResult">-</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Horizontal offset</span>
+            <span class="metric-value" id="metricDx">-</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Vertical drop</span>
+            <span class="metric-value" id="metricDy">-</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Reverse check</span>
+            <span class="metric-value" id="metricTheta">-</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="controls-panel" aria-label="Faucet layout controls">
+        <div class="control-stack">
+          <div class="control-head">
+            <label class="field">
+              Solve for
+              <select id="solve">
+                <option value="L">L faucet reach</option>
+                <option value="H1">H1 outlet height</option>
+                <option value="WS">WS drain offset</option>
+                <option value="theta">theta stream angle</option>
+                <option value="K">K wall setback</option>
+                <option value="H2">H2 basin depth</option>
+              </select>
+            </label>
+            <label class="field">
+              Unit
+              <select id="unit">
+                <option value="cm">cm</option>
+                <option value="mm">mm</option>
+                <option value="m">m</option>
+                <option value="in">in</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="rows" id="rows"></div>
+
+          <label class="check-row">
+            <input id="centerDrain" type="checkbox" checked>
+            Use W / 2 for centered drain
+          </label>
+
+          <div class="status" id="status" aria-live="polite"></div>
+
+          <label class="command">
+            Equivalent command
+            <textarea id="commandText" readonly spellcheck="false"></textarea>
+          </label>
+
+          <div class="button-row">
+            <button id="copyCommand" type="button">Copy command</button>
+            <button id="downloadSvg" type="button">Download SVG</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const FIELDS = {
+      K: { label: "K", meaning: "wall to rear basin wall", min: 0, max: 50, step: 0.1, value: 5 },
+      W: { label: "W", meaning: "inner basin width", min: 1, max: 80, step: 0.1, value: 40 },
+      WS: { label: "WS", meaning: "rear basin wall to drain", min: 0, max: 80, step: 0.1, value: 20 },
+      H1: { label: "H1", meaning: "rim to outlet height", min: -10, max: 80, step: 0.1, value: 15 },
+      H2: { label: "H2", meaning: "rim to drain depth", min: 0, max: 50, step: 0.1, value: 14 },
+      L: { label: "L", meaning: "wall to faucet outlet", min: 0, max: 60, step: 0.1, value: 19.9 },
+      theta: { label: "theta", meaning: "angle from vertical", min: -30, max: 89, step: 0.1, value: 10 }
+    };
+
+    const REQUIRED = {
+      H1: ["K", "WS", "L", "theta", "H2"],
+      L: ["K", "WS", "H1", "H2", "theta"],
+      WS: ["K", "L", "H1", "H2", "theta"],
+      theta: ["K", "WS", "L", "H1", "H2"],
+      K: ["L", "WS", "H1", "H2", "theta"],
+      H2: ["K", "WS", "L", "theta", "H1"]
+    };
+
+    const FORMULAS = {
+      H1: "H1 = (K + WS - L) / tan(theta) - H2",
+      L: "L = K + WS - (H1 + H2) * tan(theta)",
+      WS: "WS = L - K + (H1 + H2) * tan(theta)",
+      theta: "theta = atan((K + WS - L) / (H1 + H2))",
+      K: "K = L - WS + (H1 + H2) * tan(theta)",
+      H2: "H2 = (K + WS - L) / tan(theta) - H1"
+    };
+
+    const rows = document.getElementById("rows");
+    const solveEl = document.getElementById("solve");
+    const unitEl = document.getElementById("unit");
+    const centerDrainEl = document.getElementById("centerDrain");
+    const statusEl = document.getElementById("status");
+    const diagramEl = document.getElementById("diagram");
+    const commandTextEl = document.getElementById("commandText");
+    const metricResultEl = document.getElementById("metricResult");
+    const metricDxEl = document.getElementById("metricDx");
+    const metricDyEl = document.getElementById("metricDy");
+    const metricThetaEl = document.getElementById("metricTheta");
+
+    const state = {};
+    const inputEls = {};
+    const rangeEls = {};
+    const rowEls = {};
+
+    function makeRows() {
+      Object.entries(FIELDS).forEach(([name, meta]) => {
+        state[name] = meta.value;
+
+        const row = document.createElement("div");
+        row.className = "field-row";
+        row.dataset.field = name;
+
+        const top = document.createElement("div");
+        top.className = "row-top";
+
+        const symbol = document.createElement("label");
+        symbol.className = "symbol";
+        symbol.htmlFor = name;
+        symbol.textContent = meta.label;
+
+        const meaning = document.createElement("span");
+        meaning.className = "meaning";
+        meaning.textContent = meta.meaning;
+
+        const pair = document.createElement("div");
+        pair.className = "input-pair";
+
+        const range = document.createElement("input");
+        range.type = "range";
+        range.id = `${name}Range`;
+        range.min = meta.min;
+        range.max = meta.max;
+        range.step = meta.step;
+        range.value = meta.value;
+
+        const number = document.createElement("input");
+        number.type = "number";
+        number.id = name;
+        number.step = meta.step;
+        number.value = meta.value;
+
+        top.append(symbol, meaning);
+        pair.append(range, number);
+        row.append(top, pair);
+        rows.append(row);
+
+        inputEls[name] = number;
+        rangeEls[name] = range;
+        rowEls[name] = row;
+
+        range.addEventListener("input", () => {
+          number.value = range.value;
+          state[name] = toNumber(range.value);
+          update();
+        });
+
+        number.addEventListener("input", () => {
+          state[name] = toNumber(number.value);
+          if (Number.isFinite(state[name])) {
+            range.value = clampForRange(name, state[name]);
+          }
+          update();
+        });
+      });
+    }
+
+    function toNumber(value) {
+      if (value === "" || value === null || value === undefined) return NaN;
+      return Number(value);
+    }
+
+    function clampForRange(name, value) {
+      const meta = FIELDS[name];
+      return Math.min(meta.max, Math.max(meta.min, value));
+    }
+
+    function radians(degrees) {
+      return degrees * Math.PI / 180;
+    }
+
+    function degrees(radiansValue) {
+      return radiansValue * 180 / Math.PI;
+    }
+
+    function defaultLengthPrecision(unit) {
+      if (unit === "mm") return 0;
+      if (unit === "cm") return 1;
+      if (unit === "m") return 3;
+      return 2;
+    }
+
+    function fmt(value, precision) {
+      if (!Number.isFinite(value)) return "-";
+      return value.toFixed(precision);
+    }
+
+    function lengthText(value, unit) {
+      return `${fmt(value, defaultLengthPrecision(unit))} ${unit}`;
+    }
+
+    function angleText(value) {
+      return `${fmt(value, 1)} degrees`;
+    }
+
+    function solveValue(values, target) {
+      const tanTheta = Math.tan(radians(values.theta));
+
+      if (target !== "theta" && Math.abs(tanTheta) < 1e-12) {
+        throw new Error("theta is too close to 0 degrees for this solve target");
+      }
+
+      if (target === "H1") return (values.K + values.WS - values.L) / tanTheta - values.H2;
+      if (target === "L") return values.K + values.WS - (values.H1 + values.H2) * tanTheta;
+      if (target === "WS") return values.L - values.K + (values.H1 + values.H2) * tanTheta;
+      if (target === "theta") return degrees(Math.atan2(values.K + values.WS - values.L, values.H1 + values.H2));
+      if (target === "K") return values.L - values.WS + (values.H1 + values.H2) * tanTheta;
+      return (values.K + values.WS - values.L) / tanTheta - values.H1;
+    }
+
+    function currentValues() {
+      const values = {};
+      Object.keys(FIELDS).forEach((name) => {
+        values[name] = toNumber(inputEls[name].value);
+      });
+
+      const target = solveEl.value;
+      const hasW = Number.isFinite(values.W);
+      const deriveWS = target !== "WS" && centerDrainEl.checked && hasW;
+
+      if (deriveWS) {
+        values.WS = values.W / 2;
+      }
+
+      return { values, deriveWS };
+    }
+
+    function validate(values, target) {
+      const errors = [];
+
+      if (Number.isFinite(values.W) && values.W <= 0) {
+        errors.push("W must be greater than 0.");
+      }
+
+      REQUIRED[target].forEach((name) => {
+        if (!Number.isFinite(values[name])) {
+          if (name === "WS") {
+            errors.push("WS is required, or use W / 2 for a centered drain.");
+          } else {
+            errors.push(`${name} is required.`);
+          }
+        }
+      });
+
+      if (target !== "theta" && Number.isFinite(values.theta) && !(values.theta > 0 && values.theta < 90)) {
+        errors.push("theta must be greater than 0 and less than 90 degrees for forward flow.");
+      }
+
+      if (target === "theta" && Number.isFinite(values.H1) && Number.isFinite(values.H2) && values.H1 + values.H2 <= 0) {
+        errors.push("H1 + H2 must be greater than 0 when solving theta.");
+      }
+
+      if (Number.isFinite(values.W) && Number.isFinite(values.WS) && target !== "WS" && !(values.WS > 0 && values.WS < values.W)) {
+        errors.push("WS must be greater than 0 and less than W.");
+      }
+
+      return errors;
+    }
+
+    function warningsFor(values, target, metrics) {
+      const warnings = [];
+      if (Number.isFinite(values.H1) && values.H1 < 0) {
+        warnings.push("H1 is negative; check reference levels or geometry.");
+      }
+      if (Number.isFinite(metrics.dx) && metrics.dx < 0) {
+        warnings.push("Horizontal offset is negative; the target lies behind the outlet.");
+      }
+      if (Number.isFinite(metrics.dy) && metrics.dy <= 0) {
+        warnings.push("Vertical drop is not positive; check H1 and H2.");
+      }
+      if (Number.isFinite(values.W) && Number.isFinite(values.WS) && !(values.WS > 0 && values.WS < values.W)) {
+        warnings.push("WS is outside the basin width W.");
+      }
+      if (target === "theta" && Number.isFinite(values.theta) && !(values.theta > 0 && values.theta < 90)) {
+        warnings.push("Solved theta is outside the normal forward-flow range.");
+      }
+      return warnings;
+    }
+
+    function buildMetrics(values) {
+      const dx = values.K + values.WS - values.L;
+      const dy = values.H1 + values.H2;
+      const reverseTheta = dy !== 0 ? degrees(Math.atan2(dx, dy)) : NaN;
+      const centerOffset = Number.isFinite(values.W) ? values.WS - values.W / 2 : NaN;
+      return { dx, dy, reverseTheta, centerOffset };
+    }
+
+    function syncRows(target, deriveWS, values) {
+      Object.keys(FIELDS).forEach((name) => {
+        const isSolved = name === target;
+        const isDerived = name === "WS" && deriveWS;
+        const readOnly = isSolved || isDerived;
+
+        rowEls[name].classList.toggle("is-solved", isSolved);
+        rowEls[name].classList.toggle("is-derived", isDerived);
+        inputEls[name].readOnly = readOnly;
+        rangeEls[name].disabled = readOnly;
+
+        if (isSolved || isDerived) {
+          inputEls[name].value = fmt(values[name], name === "theta" ? 1 : 2);
+          if (Number.isFinite(values[name])) {
+            rangeEls[name].value = clampForRange(name, values[name]);
+          }
+        }
+      });
+    }
+
+    function updateMetrics(values, target, metrics) {
+      const unit = unitEl.value;
+      const targetUnit = target === "theta" ? "degrees" : unit;
+      const targetPrecision = target === "theta" ? 1 : defaultLengthPrecision(unit);
+
+      metricResultEl.textContent = `${target} = ${fmt(values[target], targetPrecision)} ${targetUnit}`;
+      metricDxEl.textContent = lengthText(metrics.dx, unit);
+      metricDyEl.textContent = lengthText(metrics.dy, unit);
+      metricThetaEl.textContent = angleText(metrics.reverseTheta);
+    }
+
+    function updateStatus(errors, warnings, values, target, metrics) {
+      statusEl.innerHTML = "";
+
+      const formula = document.createElement("div");
+      formula.className = "message";
+      formula.textContent = FORMULAS[target];
+      statusEl.append(formula);
+
+      errors.concat(warnings).forEach((message, index) => {
+        const item = document.createElement("div");
+        item.className = `message ${index < errors.length ? "error" : "warning"}`;
+        item.textContent = message;
+        statusEl.append(item);
+      });
+
+      if (errors.length === 0 && warnings.length === 0 && Number.isFinite(metrics.centerOffset)) {
+        const item = document.createElement("div");
+        item.className = "message";
+        item.textContent = `Drain offset from basin center: ${lengthText(metrics.centerOffset, unitEl.value)}.`;
+        statusEl.append(item);
+      }
+    }
+
+    function updateCommand(values, target) {
+      const unit = unitEl.value;
+      const args = [`python scripts/faucet_geometry.py --solve ${target}`];
+
+      ["K", "W", "WS", "H1", "H2", "L", "theta"].forEach((name) => {
+        if (Number.isFinite(values[name]) && name !== target) {
+          args.push(`--${name} ${fmt(values[name], name === "theta" ? 3 : 3)}`);
+        }
+      });
+
+      args.push(`--unit ${unit}`);
+      commandTextEl.value = args.join(" ");
+    }
+
+    function svgLine(label, x1, y1, x2, y2, color, textX, textY, value, anchor = "middle") {
+      return `
+        <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="3"
+          marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)"></line>
+        <text x="${textX}" y="${textY}" class="svg-text" fill="${color}" font-size="17" font-weight="760"
+          text-anchor="${anchor}">${label} = ${value}</text>`;
+    }
+
+    function draw(values, target, metrics) {
+      const unit = unitEl.value;
+      const compact = window.matchMedia("(max-width: 620px)").matches;
+      diagramEl.setAttribute("viewBox", compact ? "0 0 1040 680" : "0 0 1120 680");
+
+      const frontWidth = Number.isFinite(values.W)
+        ? values.W
+        : Math.max(values.WS * 1.8, values.WS + Math.abs(values.K + values.WS - values.L), values.WS + 10, 1);
+      const drainModel = values.K + values.WS;
+      const frontModel = values.K + frontWidth;
+      const maxX = Math.max(frontModel, values.L, drainModel, values.K, 1);
+      const left = 92;
+      const right = 770;
+      const sx = (value) => left + value * ((right - left) / maxX);
+
+      const wallX = sx(0);
+      const rearX = sx(values.K);
+      const outletX = sx(values.L);
+      const drainX = sx(drainModel);
+      const frontX = sx(frontModel);
+
+      const outletY = 128;
+      const drainY = 558;
+      const scaleY = (drainY - outletY) / Math.max(Math.abs(values.H1 + values.H2), 1);
+      const rimY = outletY + values.H1 * scaleY;
+      const safeRimY = Math.max(190, Math.min(500, rimY));
+
+      const resultUnit = target === "theta" ? "degrees" : unit;
+      const resultPrecision = target === "theta" ? 1 : defaultLengthPrecision(unit);
+      const resultText = `${target} = ${fmt(values[target], resultPrecision)} ${resultUnit}`;
+      const centerOffsetText = Number.isFinite(metrics.centerOffset)
+        ? `center offset = ${lengthText(metrics.centerOffset, unit)}`
+        : "";
+      const detailPanel = compact ? "" : `
+        <text x="870" y="${outletY + 5}" class="svg-text" font-size="14" fill="#5d6673">outlet level</text>
+        <text x="870" y="${safeRimY - 8}" class="svg-text" font-size="14" fill="#5d6673">basin rim level</text>
+        <text x="870" y="${drainY - 8}" class="svg-text" font-size="14" fill="#5d6673">drain target level</text>
+
+        <rect x="866" y="88" width="220" height="104" rx="8" fill="#f7fbff" stroke="#94bff0"></rect>
+        <text x="886" y="125" class="svg-text" font-size="16" font-weight="760">Solved result</text>
+        <text x="886" y="160" class="svg-text" font-size="22" font-weight="820">${resultText}</text>
+
+        <rect x="866" y="220" width="220" height="124" rx="8" fill="#ffffff" stroke="#d9dfe8"></rect>
+        <text x="886" y="256" class="svg-text" font-size="16" font-weight="760">Validation</text>
+        <text x="886" y="286" class="svg-text" font-size="14">reverse theta = ${angleText(metrics.reverseTheta)}</text>
+        <text x="886" y="312" class="svg-text" font-size="14">drop = ${lengthText(metrics.dy, unit)}</text>
+        <text x="886" y="338" class="svg-text" font-size="14">${centerOffsetText}</text>
+      `;
+
+      diagramEl.innerHTML = `
+        <defs>
+          <marker id="arrowEnd" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="currentColor"></path>
+          </marker>
+          <marker id="arrowStart" markerWidth="9" markerHeight="9" refX="1" refY="3" orient="auto">
+            <path d="M8,0 L8,6 L0,3 z" fill="currentColor"></path>
+          </marker>
+          <pattern id="wallHatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="9" stroke="#b3bac6" stroke-width="3"></line>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="1120" height="680" fill="#ffffff"></rect>
+
+        <rect x="${wallX - 24}" y="76" width="30" height="520" fill="url(#wallHatch)" stroke="#69717e"></rect>
+        <rect x="${wallX}" y="${drainY}" width="${frontX - wallX + 56}" height="30" fill="#c6cbd3"></rect>
+
+        <path d="M${wallX + 8} ${outletY - 62} L${Math.max(outletX - 138, wallX + 70)} ${outletY - 62}
+          Q${outletX - 44} ${outletY - 62} ${outletX} ${outletY}" fill="none" stroke="#3d444f"
+          stroke-width="21" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle cx="${outletX}" cy="${outletY}" r="8" fill="#232832"></circle>
+
+        <path d="M${rearX} ${safeRimY} L${frontX} ${safeRimY}
+          C${frontX - 8} ${safeRimY + 88} ${frontX - 48} ${drainY - 38} ${drainX + 112} ${drainY}
+          L${drainX - 150} ${drainY}
+          C${rearX + 72} ${drainY - 42} ${rearX + 12} ${safeRimY + 90} ${rearX} ${safeRimY} Z"
+          fill="#f8fafc" stroke="#20252d" stroke-width="3"></path>
+        <ellipse cx="${drainX}" cy="${drainY}" rx="28" ry="11" fill="#20252d"></ellipse>
+
+        <path d="M${outletX} ${outletY} L${drainX} ${drainY}" fill="none" stroke="var(--water)"
+          stroke-width="9" stroke-linecap="round"></path>
+
+        <g stroke="#858d99" stroke-dasharray="6 6" stroke-width="1.4">
+          <line x1="${wallX}" y1="78" x2="${wallX}" y2="610"></line>
+          <line x1="${rearX}" y1="78" x2="${rearX}" y2="610"></line>
+          <line x1="${outletX}" y1="78" x2="${outletX}" y2="610"></line>
+          <line x1="${drainX}" y1="78" x2="${drainX}" y2="610"></line>
+          <line x1="${frontX}" y1="78" x2="${frontX}" y2="610"></line>
+          <line x1="${Math.max(rearX - 28, 40)}" y1="${safeRimY}" x2="820" y2="${safeRimY}"></line>
+          <line x1="${outletX}" y1="${outletY}" x2="820" y2="${outletY}"></line>
+          <line x1="${drainX - 30}" y1="${drainY}" x2="820" y2="${drainY}"></line>
+        </g>
+
+        ${svgLine("L", wallX, 56, outletX, 56, "var(--red)", (wallX + outletX) / 2, 45, lengthText(values.L, unit))}
+        ${svgLine("K", wallX, 94, rearX, 94, "var(--blue)", (wallX + rearX) / 2, 84, lengthText(values.K, unit))}
+        ${svgLine("WS", rearX, 132, drainX, 132, "var(--green)", (rearX + drainX) / 2, 122, lengthText(values.WS, unit))}
+        ${svgLine("dx", outletX, safeRimY - 34, drainX, safeRimY - 34, "var(--blue)", (outletX + drainX) / 2, safeRimY - 44, lengthText(metrics.dx, unit))}
+        ${Number.isFinite(values.W) ? svgLine("W", rearX, 630, frontX, 630, "var(--purple)", (rearX + frontX) / 2, 620, lengthText(values.W, unit)) : ""}
+        ${svgLine("H1", 848, outletY, 848, safeRimY, "var(--orange)", 834, (outletY + safeRimY) / 2, lengthText(values.H1, unit), "end")}
+        ${svgLine("H2", 848, safeRimY, 848, drainY, "var(--amber)", 834, (safeRimY + drainY) / 2, lengthText(values.H2, unit), "end")}
+
+        <text x="${outletX + 20}" y="${Math.min(outletY + 60, drainY - 12)}" class="svg-text" fill="var(--blue)"
+          font-size="17" font-weight="760">theta = ${angleText(values.theta)}</text>
+        ${detailPanel}
+      `;
+    }
+
+    function update() {
+      const target = solveEl.value;
+      const { values, deriveWS } = currentValues();
+      const errors = validate(values, target);
+
+      if (errors.length === 0) {
+        try {
+          values[target] = solveValue(values, target);
+        } catch (error) {
+          errors.push(error.message);
+        }
+      }
+
+      const metrics = buildMetrics(values);
+      const warnings = errors.length === 0 ? warningsFor(values, target, metrics) : [];
+
+      syncRows(target, deriveWS, values);
+      updateMetrics(values, target, metrics);
+      updateStatus(errors, warnings, values, target, metrics);
+      updateCommand(values, target);
+
+      if (errors.length === 0) {
+        draw(values, target, metrics);
+      }
+    }
+
+    document.getElementById("copyCommand").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(commandTextEl.value);
+      } catch {
+        commandTextEl.select();
+        document.execCommand("copy");
+      }
+    });
+
+    document.getElementById("downloadSvg").addEventListener("click", () => {
+      const blob = new Blob([diagramEl.outerHTML], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "wall-mounted-faucet-layout.svg";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    solveEl.addEventListener("change", update);
+    unitEl.addEventListener("change", update);
+    centerDrainEl.addEventListener("change", update);
+    window.addEventListener("resize", update);
+
+    makeRows();
+    update();
+  </script>
+</body>
+</html>

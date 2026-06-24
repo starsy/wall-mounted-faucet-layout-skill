@@ -1,6 +1,6 @@
 ---
 name: wall-mounted-faucet-layout
-description: Calculate, validate, and visualize wall-mounted faucet installation geometry, especially faucet reach L and outlet height H1 for product selection. Use when an agent needs to solve or check faucet reach, outlet height, basin depth, stream angle, wall setback, or drain position from K, W/WS, L, H1, H2, and theta, or generate an annotated SVG diagram for the result.
+description: Calculate, validate, and visualize wall-mounted faucet installation geometry, especially faucet reach L and outlet height H1 for product selection. Use when an agent needs to solve or check faucet reach, outlet height, basin depth, stream angle, wall setback, or drain position from K, W/WS, L, H1, H2, and theta, generate an annotated SVG diagram, or provide an interactive HTML layout for parameter tuning.
 ---
 
 # Wall-Mounted Faucet Layout
@@ -11,6 +11,7 @@ Diagram reference:
 
 - English: `assets/wall_mounted_faucet_geometry_v2.svg`
 - Chinese: `assets/wall_mounted_faucet_geometry_v2_zh.svg`
+- Interactive calculator: `assets/interactive_layout.html`
 
 ## Purpose
 
@@ -144,6 +145,7 @@ H2=\frac{K+WS-L}{\tan(\theta)}-H1
 9. Run the validation checks.
 10. Recommend an on-site water test before concealed installation.
 11. When the user would benefit from a visual explanation or installation handoff, generate an annotated SVG with `scripts/render_geometry_svg.py`.
+12. When the user would benefit from changing inputs directly, exploring tradeoffs, or sharing a browser-based calculator, point them to `assets/interactive_layout.html`.
 
 ## Validation checks
 
@@ -230,6 +232,18 @@ python scripts/render_geometry_svg.py --solve L --K 5 --WS 20 --H1 15 --H2 14 --
 
 The generated SVG marks the supplied dimensions, solved value, horizontal offset, vertical drop, reverse-check angle, and practical warning note directly in the diagram. Prefer writing the output to a user-visible path named for the project or scenario.
 
+## Interactive HTML output
+
+When the user wants to tune dimensions by hand, compare tradeoffs, or see the geometry update while changing inputs, use the static interactive calculator:
+
+```text
+assets/interactive_layout.html
+```
+
+The HTML runs locally in a browser without a server or external dependencies. It mirrors the same straight-line formulas and validation checks as `scripts/faucet_geometry.py`, lets the user choose the solve target, derives `WS = W / 2` for a centered drain when appropriate, updates the side-view diagram live, and provides an equivalent Python command for deterministic reruns.
+
+Use the HTML as an exploratory UI, not as a replacement for the script. For final reported dimensions, installer handoff SVGs, or repeatable agent calculations, still prefer `scripts/faucet_geometry.py` and `scripts/render_geometry_svg.py`.
+
 ## Worked examples
 
 ### Example 1: choose faucet reach, solve for `L`
@@ -299,6 +313,12 @@ Reference visual renderer:
 
 ```text
 scripts/render_geometry_svg.py
+```
+
+Reference interactive calculator:
+
+```text
+assets/interactive_layout.html
 ```
 
 Primary calculator commands:
