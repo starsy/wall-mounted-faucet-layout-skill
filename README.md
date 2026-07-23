@@ -69,6 +69,15 @@ Use it from an agent prompt:
 Use $wall-mounted-faucet-layout to solve faucet reach L with K=5 cm, WS=20 cm, H1=15 cm, H2=14 cm, and theta=10 degrees.
 ```
 
+## Example Questions
+
+After installing the skill, try asking:
+
+- "What faucet reach do I need if the wall-to-basin setback is 5 cm, the drain is 20 cm from the rear inner wall, the outlet is 15 cm above the rim, the basin is 14 cm deep, and the water angle is 10 degrees from vertical?"
+- "A faucet I like has a 20.5 cm reach. With a 5 cm wall setback, a 40 cm-wide basin, a centered drain, a 14 cm basin depth, and a 10-degree water angle, how high should I mount the outlet above the rim?"
+- "Where should the drain target be if K=5 cm, H1=15 cm, H2=14 cm, L=20.5 cm, and theta=10 degrees?"
+- "Generate an annotated SVG showing the faucet, basin, water path, dimensions, and calculated reach for my layout."
+
 ## Most Common Workflows
 
 Most faucet-selection questions come down to `L` or `H1`:
