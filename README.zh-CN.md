@@ -69,6 +69,15 @@ calculator at `vendor/skills/wall-mounted-faucet-layout/scripts/faucet_geometry.
 Use $wall-mounted-faucet-layout to solve faucet reach L with K=5 cm, WS=20 cm, H1=15 cm, H2=14 cm, and theta=10 degrees.
 ```
 
+## 示例问题
+
+安装完成后，可以试着问：
+
+- “如果完成墙面到台盆后侧内壁的距离是 5 cm，排水口距后侧内壁 20 cm，出水口高出盆沿 15 cm，台盆深 14 cm，水流相对垂直方向向前倾斜 10 度，我需要选择伸出距离多长的龙头？”
+- “我看中的龙头伸出距离是 20.5 cm。若完成墙面到台盆后侧内壁的距离为 5 cm，台盆前后内宽为 40 cm，排水口居中，台盆深 14 cm，水流相对垂直方向向前倾斜 10 度，出水口应该安装在盆沿上方多高的位置？”
+- “如果 K=5 cm、H1=15 cm、H2=14 cm、L=20.5 cm、theta=10 度，排水目标点应该设在距台盆后侧内壁多远的位置？”
+- “请根据我的布局生成带标注的 SVG，显示龙头、台盆、水流路径、各项尺寸和计算出的龙头伸出距离。”
+
 ## 最常见工作流
 
 选择壁挂式龙头时，通常最需要计算的是 `L` 或 `H1`：
